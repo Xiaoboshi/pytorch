@@ -2161,10 +2161,6 @@ class TestQuantizedConv(unittest.TestCase):
         Y_q = qconv_fn(
             X_q,
             W_prepack,
-            strides,
-            pads,
-            dilations,
-            groups,
             Y_scale,
             Y_zero_point,
         )
@@ -2198,17 +2194,17 @@ class TestQuantizedConv(unittest.TestCase):
            pad_h=st.integers(0, 2),
            pad_w=st.integers(0, 2),
            dilation=st.integers(1, 2),
-           X_scale=st.floats(1.2, 1.6),
+           X_scale=hu.floats(1.2, 1.6),
            X_zero_point=st.integers(0, 4),
-           W_scale=st.lists(st.floats(0.2, 1.6), min_size=1, max_size=2),
+           W_scale=st.lists(hu.floats(0.2, 1.6), min_size=1, max_size=2),
            W_zero_point=st.lists(st.integers(-5, 5), min_size=1, max_size=2),
-           Y_scale=st.floats(4.2, 5.6),
+           Y_scale=hu.floats(4.2, 5.6),
            Y_zero_point=st.integers(0, 4),
            use_bias=st.booleans(),
            use_relu=st.booleans(),
            use_channelwise=st.booleans(),
            qengine=st.sampled_from(("qnnpack", "fbgemm")))
-    def test_qconv(
+    def test_qconv2d(
             self,
             batch_size,
             input_channels_per_group,
@@ -2248,6 +2244,31 @@ class TestQuantizedConv(unittest.TestCase):
         strides = (stride_h, stride_w)
         pads = (pad_h, pad_w)
         dilations = (dilation, dilation)
+
+        print('config:',
+              batch_size,
+              input_channels_per_group,
+              height,
+              width,
+              output_channels_per_group,
+              groups,
+              kernel_h,
+              kernel_w,
+              stride_h,
+              stride_w,
+              pad_h,
+              pad_w,
+              dilation,
+              X_scale,
+              X_zero_point,
+              W_scale,
+              W_zero_point,
+              Y_scale,
+              Y_zero_point,
+              use_bias,
+              use_relu,
+              use_channelwise,
+              qengine)
 
         with override_quantized_engine(qengine):
             qconv = torch.ops.quantized.conv2d
@@ -2317,11 +2338,11 @@ class TestQuantizedConv(unittest.TestCase):
            stride=st.integers(1, 2),
            pad=st.integers(0, 2),
            dilation=st.integers(1, 2),
-           X_scale=st.floats(1.2, 1.6),
+           X_scale=hu.floats(1.2, 1.6),
            X_zero_point=st.integers(0, 4),
-           W_scale=st.lists(st.floats(0.2, 1.6), min_size=1, max_size=2),
+           W_scale=st.lists(hu.floats(0.2, 1.6), min_size=1, max_size=2),
            W_zero_point=st.lists(st.integers(-5, 5), min_size=1, max_size=2),
-           Y_scale=st.floats(4.2, 5.6),
+           Y_scale=hu.floats(4.2, 5.6),
            Y_zero_point=st.integers(0, 4),
            use_bias=st.booleans(),
            qengine=st.sampled_from(("qnnpack", "fbgemm")))
@@ -2416,11 +2437,11 @@ class TestQuantizedConv(unittest.TestCase):
            pad_h=st.integers(0, 2),
            pad_w=st.integers(0, 2),
            dilation=st.integers(1, 2),
-           X_scale=st.floats(1.2, 1.6),
+           X_scale=hu.floats(1.2, 1.6),
            X_zero_point=st.integers(0, 4),
-           W_scale=st.lists(st.floats(0.2, 1.6), min_size=1, max_size=2),
+           W_scale=st.lists(hu.floats(0.2, 1.6), min_size=1, max_size=2),
            W_zero_point=st.lists(st.integers(-5, 5), min_size=1, max_size=2),
-           Y_scale=st.floats(4.2, 5.6),
+           Y_scale=hu.floats(4.2, 5.6),
            Y_zero_point=st.integers(0, 4),
            use_bias=st.booleans(),
            use_relu=st.booleans(),
