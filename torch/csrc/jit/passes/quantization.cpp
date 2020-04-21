@@ -124,6 +124,7 @@ std::vector<std::string> _single_input_general_aten_funcs = {
     "contiguous",
     "permute",
     "repeat_interleave",
+    "clamp",
     "relu",
     "sigmoid",
     "tanh",
